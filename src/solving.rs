@@ -1,0 +1,77 @@
+pub fn solve(board: &mut [[u8; 9]; 9]) {
+    let mut rows = [[false; 9]; 9];
+    let mut columns = [[false; 9]; 9];
+    let mut squares = [[false; 9]; 9];
+
+    for i in 0..9 {
+        for j in 0..9 {
+            if board[i][j] != 0 {
+                let key = (board[i][j]-1) as usize;
+                rows[i][key] = true;
+                columns[j][key] = true;
+                
+                squares[i / 3 * 3 + j / 3][key] = true;
+            }
+        }
+    }
+
+    backtrack(board, &mut rows, &mut columns, &mut squares);
+}
+
+fn find_next_empty(board: &mut [[u8; 9]; 9]) -> Option<(usize, usize)> {
+    for i in 0..9 {
+        for j in 0..9 {
+            if board[i][j] == 0 {
+                return Some((i, j));
+            }
+        }
+    }
+
+    None
+}
+
+fn backtrack(board: &mut [[u8; 9]; 9],
+    rows: &mut [[bool; 9]; 9],
+    columns: &mut [[bool; 9]; 9],
+    squares: &mut [[bool; 9]; 9]) -> bool
+{
+    if let Some((i, j)) = find_next_empty(board) {
+        for num in 1..10 {
+            if check(board, i, j, num, rows, columns, squares) {
+                if backtrack(board, rows, columns, squares) {
+                    return true;
+                }
+
+                let key = (num-1) as usize;
+    
+                rows[i][key] = false;
+                columns[j][key] = false;
+                squares[i / 3 * 3 + j / 3][key] = false;
+                board[i][j] = 0;
+            }
+        }
+    
+        false
+    } else {
+        true
+    }
+}
+
+fn check(board: &mut [[u8; 9]; 9],
+    i: usize, j: usize, val: u8,
+    rows: &mut [[bool; 9]; 9],
+    columns: &mut [[bool; 9]; 9],
+    squares: &mut [[bool; 9]; 9]) -> bool
+{
+    let key = (val-1) as usize;
+    if !rows[i][key] && !columns[j][key] && !squares[i / 3 * 3 + j / 3][key] {
+        rows[i][key] = true;
+        columns[j][key] = true;
+        squares[i / 3 * 3 + j / 3][key] = true;
+        board[i][j] = val;
+
+        true
+    } else {
+        false
+    }
+}
