@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./sudoku-cli/Cargo.toml"
+    ]
+}
