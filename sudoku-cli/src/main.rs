@@ -8,9 +8,11 @@ use sudoku_utils::validating::validate;
 type SudokuInput = NamedView<ResizedView<ResizedView<EditView>>>;
 
 fn main() {
-    let board = generate_board(1);
+    let board = generate_board(2);
 
     let mut siv = Cursive::default();
+
+    let _ = siv.load_theme_file("theme.toml");
 
     let mut grid_layout = LinearLayout::vertical();
 

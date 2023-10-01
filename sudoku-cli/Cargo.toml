@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 sudoku-utils = { path = "../", version = "0.1" }
-cursive = "0.20"
+cursive = { version = "0.20", features = ["toml"] }
