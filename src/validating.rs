@@ -33,8 +33,8 @@ pub fn validate_at_position(board: &[[u8; 9]; 9], row: usize, column: usize) -> 
 
     for i in 0..9 {
         if board[row][i] == 0 || row_h[board[row][i] as usize] ||
-        board[i][column] != 0 || column_h[board[i][column] as usize] ||
-        board[square_row][square_column] != 0 
+        board[i][column] == 0 || column_h[board[i][column] as usize] ||
+        board[square_row][square_column] == 0 
         || square_h[board[square_row][square_column] as usize] {
             return false;
         }
