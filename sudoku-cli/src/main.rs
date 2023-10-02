@@ -1,18 +1,45 @@
+use cursive::event::{Event, Key};
 use cursive::view::{Resizable, Nameable};
 use cursive::{Cursive, CursiveExt};
-use cursive::views::{EditView, Dialog, LinearLayout, NamedView, ResizedView, TextView};
+use cursive::views::{EditView, Dialog, LinearLayout, NamedView, ResizedView, TextView, SelectView};
 
 use sudoku_utils::generating::generate_board;
 use sudoku_utils::validating::validate;
 
 type SudokuInput = NamedView<ResizedView<ResizedView<EditView>>>;
 
+const DIALOG_TITLE: &'static str = "Sudoku CLI";
+
 fn main() {
-    let board = generate_board(2);
-
     let mut siv = Cursive::default();
-
     let _ = siv.load_theme_file("theme.toml");
+
+    add_difficulty_board(&mut siv);
+
+    siv.add_global_callback(Event::Key(Key::Esc), |s| s.quit());
+
+    siv.run();
+}
+
+fn add_difficulty_board(siv: &mut Cursive) {
+    siv.add_layer(Dialog::around(SelectView::<u8>::new()
+            .item("Easy", 10)
+            .item("Medium", 30)
+            .item("Hard", 50)
+            .on_submit(|s, difficulty| {
+                s.pop_layer();
+                s.pop_layer();
+                s.pop_layer();
+                s.set_user_data(*difficulty);
+                add_board_dialog(s);
+            })
+        )
+        .title(DIALOG_TITLE)
+    );
+}
+
+fn add_board_dialog(siv: &mut Cursive) {
+    let board = generate_board(*siv.user_data().unwrap());
 
     let mut grid_layout = LinearLayout::vertical();
 
@@ -43,14 +70,12 @@ fn main() {
     siv.set_user_data(board);
 
     let dialog = Dialog::new()
-        .title("Sudoku Game")
+        .title(DIALOG_TITLE)
         .content(layout)
         .button("Validate", validate_board)
         .button("Quit", |s| s.quit());
 
     siv.add_layer(dialog);
-
-    siv.run();
 }
 
 fn validate_board(s: &mut Cursive) {
@@ -73,8 +98,10 @@ fn validate_board(s: &mut Cursive) {
 
     if validate(&sboard) {
         s.add_layer(Dialog::around(
-            TextView::new("You won"))
-            .button("Quit", |ss| ss.quit()
-        ));
+                TextView::new("You won"))
+                .button("Quit", |ss| ss.quit())
+                .button("Again", |ss| add_difficulty_board(ss)
+            ).title(DIALOG_TITLE)
+        );
     }
 }
