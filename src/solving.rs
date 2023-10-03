@@ -21,16 +21,10 @@ impl Sudoku {
         Sudoku::backtrack(&mut self.board, &mut rows, &mut columns, &mut squares);
     }
     
-    fn find_next_empty(board: &[[u8; 9]; 9]) -> Option<(usize, usize)> {
-        for i in 0..9 {
-            for j in 0..9 {
-                if board[i][j] == 0 {
-                    return Some((i, j));
-                }
-            }
-        }
-    
-        None
+    fn find_next_empty(board: &[[u8; 9]; 9]) -> Option<(usize, usize)> {    
+        board.iter().enumerate().find_map(|(i, row)| {
+            row.iter().position(|&val| val == 0).map(|j| (i, j))
+        })
     }
     
     fn backtrack(board: &mut [[u8; 9]; 9],
