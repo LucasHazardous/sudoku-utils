@@ -1,14 +1,14 @@
 [colors]
     background = "#11111b"
     shadow     = "#585b70"
-    view       = "#f5e0dc"
+    view       = "#f5f5f5"
 
     primary   = "#1e1e2e"
-    secondary = "#94e2d5"
+    secondary = "#11111b"
     tertiary  = "#45475a"
 
-    title_primary   = "#00ff95"
-    title_secondary = "#00ff95"
+    title_primary   = "#11111b"
+    title_secondary = "#11111b"
 
     highlight          = "#94e2d5"
     highlight_inactive = "#94e2d5"
